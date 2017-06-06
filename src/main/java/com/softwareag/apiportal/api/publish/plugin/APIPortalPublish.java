@@ -212,12 +212,14 @@ public class APIPortalPublish
         if (response.getStatus() == 200) {
             getLog().info("Publish success");
             String responseFromServer = response.getEntity(String.class);
-            getLog().info("The config file name is " + getTempConfigName());
-            prop.setProperty("path", parseAndFetchApiId(responseFromServer));
-            try (OutputStream os = new FileOutputStream(getTempConfigName());) {
-                prop.store(os, "store resource path");
+            getLog().info("The config file name is " + getTempConfigFile().getName());
+            String apiID = parseAndFetchApiId(responseFromServer);
+            prop.setProperty("apiID", apiID);
+            try (OutputStream os = new FileOutputStream(getTempConfigFile());) {
+                prop.store(os, "store API ID");
             } catch (IOException e) {
-                getLog().error(e);
+                getLog().warn("Saving api ID failed");
+                getLog().warn(e);
             }
         } else {
             getLog().error("Publish failed status :" + response.getStatus());
@@ -236,9 +238,11 @@ public class APIPortalPublish
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(response);
         String api="";
+        System.out.println("The response is "+response);
         if(matcher.find()) {
             api = matcher.group();
         }
+        System.out.println("the api is "+api);
         return api;
     }
     
@@ -248,14 +252,22 @@ public class APIPortalPublish
      * @return 
      */
     private String getApiId(Properties prop) {
+       
      try (FileInputStream input = new FileInputStream(getTempConfigFile());){
             // load a properties file
             prop.load(input);
         } catch (IOException ex) {
             //TODO: ignore
-            ex.printStackTrace();
+            getLog().warn("Error navigating the file "+getTempConfigFile().getAbsolutePath());
+            getLog().warn("if your are seeing this first time igore this error ");
         }
-        String updatePath = prop.getProperty("path", "");
+        String updatePath = prop.getProperty("apiID", "");
+        if(!updatePath.isEmpty()){
+        getLog().info("The api id is "+updatePath);
+        }
+        else{
+            getLog().debug("The api id is empty. Might be this is first time you are executing");
+        }
         return updatePath;
     }
     
