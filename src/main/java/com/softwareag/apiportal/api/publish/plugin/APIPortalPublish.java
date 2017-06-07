@@ -49,15 +49,68 @@ public class APIPortalPublish
         extends AbstractMojo {
 
     @Parameter(required = true, defaultValue = "http://localhost")
+    /**
+     * API Portal host name with port
+     */
     private URL portalHost;
 
     @Parameter(defaultValue = "/abs/apirepository/v1/apis")
+    /**
+     * resource path 
+     */
     private String resource;
 
     @Parameter
+    /**
+     * Query parameters such as tenant=default or tenant=sagtours or custom tenant,
+     * Type=swagger or Type=wsdl or Type=raml or custom types, By default 
+     * "tenant=default&type=Swagger"
+     */
     private Properties queryParam;
 
-    public void setPortalHost(URL portalHost) {
+   
+
+//    @Parameter(defaultValue = "system")
+    /**
+     *
+     * @parameter default-value="system"
+     *
+     */
+    @Parameter(required = true, defaultValue = "system")
+    /**
+     * API Portal username 
+     */
+    private String username;
+
+    @Parameter(required = true, defaultValue = "manager")
+    /**
+     * API Portal password
+     */
+    private String password;
+
+    @Parameter(defaultValue = "multipart/form-data")
+    /**
+     * Content-Type this is usually multipart/form-data so far
+     */
+    private String contentType;
+
+    @Parameter(required = true, defaultValue = "${project.build.directory}/swagger.json")
+    /**
+     * File path of the API , by default this looks for target directory swagger.json.
+     * you can specify absolute path like c:/publish/swagger.json or /usr/bin/swagger.json
+     */
+    private File filePath;
+    
+    /**
+     * Location from where the config files saves.
+     *
+     * @parameter expression="${project.build.directory}"
+     * @required
+     */
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    private File outputDirectory;
+
+     public void setPortalHost(URL portalHost) {
         this.portalHost = portalHost;
     }
 
@@ -69,9 +122,6 @@ public class APIPortalPublish
         this.queryParam = queryParam;
     }
 
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
     public void setPassword(String password) {
         this.password = password;
     }
@@ -83,25 +133,6 @@ public class APIPortalPublish
     public void setFilePath(File filePath) {
         this.filePath = filePath;
     }
-
-//    @Parameter(defaultValue = "system")
-    /**
-     *
-     * @parameter default-value="system"
-     *
-     */
-    @Parameter(required = true, defaultValue = "system")
-    private String username;
-
-    @Parameter(required = true, defaultValue = "manager")
-    private String password;
-
-    @Parameter(defaultValue = "multipart/form-data")
-    private String contentType;
-
-    @Parameter(required = true, defaultValue = "${project.build.directory}/swagger.json")
-    private File filePath;
-
     public URL getPortalHost() {
         return portalHost;
     }
@@ -130,14 +161,7 @@ public class APIPortalPublish
         return filePath;
     }
 
-    /**
-     * Location of the file.
-     *
-     * @parameter expression="${project.build.directory}"
-     * @required
-     */
-    @Parameter(required = true, defaultValue = "${project.build.directory}")
-    private File outputDirectory;
+    
 
     public File getOutputDirectory() {
         return outputDirectory;
