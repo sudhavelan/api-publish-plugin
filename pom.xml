@@ -6,6 +6,7 @@
   <packaging>maven-plugin</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>api-publish-plugin Maven Mojo</name>
+  <description>API Portal publish maven plugin</description>
   <url>http://maven.apache.org</url>
   <properties>
     <maven.compiler.source>1.5</maven.compiler.source>
